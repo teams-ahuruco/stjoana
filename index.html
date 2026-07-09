@@ -25,8 +25,10 @@
     --init-bridge:#0d9448;
     --max:1180px;
     --ease-smooth:cubic-bezier(0.33, 1, 0.68, 1);
-    --ease-out-soft:cubic-bezier(0.16, 1, 0.3, 1);
-    --dur-reveal:1.05s;
+    --ease-out-soft:cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-reveal:0.58s;
+    --dur-reveal-exit:0.46s;
+    --dur-reveal-child:0.52s;
     --header-h:84px;
   }
   *{box-sizing:border-box;}
@@ -513,7 +515,12 @@
     border-radius:16px;
     background:var(--white);
     padding:15px 15px 13px;
+  }
+  .impact-item.reveal.in-view{
     animation:softFadePulse 8s ease-in-out infinite;
+  }
+  .impact-item.reveal:not(.in-view){
+    animation:none;
   }
   /* Impact cards: moving gradient stroke per initiative color */
   .impact-item::after{ display:none; }
@@ -992,11 +999,10 @@
   /* ---- Scroll reveal ---- */
   .reveal{
     opacity:0;
-    transform:translate3d(0, 42px, 0) scale(0.98);
+    transform:translate3d(0, 28px, 0) scale(0.99);
     transition:
-      opacity .85s var(--ease-out-soft),
-      transform .85s var(--ease-out-soft);
-    will-change:transform, opacity;
+      opacity var(--dur-reveal) var(--ease-out-soft),
+      transform var(--dur-reveal) var(--ease-out-soft);
     backface-visibility:hidden;
     -webkit-backface-visibility:hidden;
   }
@@ -1005,10 +1011,10 @@
     transform:translate3d(0, 0, 0) scale(1);
   }
   .reveal.fall-left{
-    transform:translate3d(-36px, 42px, 0) scale(0.98);
+    transform:translate3d(-32px, 28px, 0) scale(0.99);
   }
   .reveal.fall-right{
-    transform:translate3d(36px, 42px, 0) scale(0.98);
+    transform:translate3d(32px, 28px, 0) scale(0.99);
   }
   .reveal.fall-left.in-view,
   .reveal.fall-right.in-view{
@@ -1017,68 +1023,80 @@
   .reveal.out-up,
   .reveal.out-down{
     opacity:0;
-    transition-duration:.7s;
+    transition-duration:var(--dur-reveal-exit);
   }
   .reveal.out-up:not(.fall-left):not(.fall-right){
-    transform:translate3d(0, -30px, 0) scale(0.98);
+    transform:translate3d(0, -22px, 0) scale(0.99);
   }
   .reveal.out-down:not(.fall-left):not(.fall-right){
-    transform:translate3d(0, 42px, 0) scale(0.98);
+    transform:translate3d(0, 28px, 0) scale(0.99);
   }
   .reveal.fall-left.out-up{
-    transform:translate3d(-28px, -30px, 0) scale(0.98);
+    transform:translate3d(-24px, -22px, 0) scale(0.99);
   }
   .reveal.fall-left.out-down{
-    transform:translate3d(-28px, 42px, 0) scale(0.98);
+    transform:translate3d(-24px, 28px, 0) scale(0.99);
   }
   .reveal.fall-right.out-up{
-    transform:translate3d(28px, -30px, 0) scale(0.98);
+    transform:translate3d(24px, -22px, 0) scale(0.99);
   }
   .reveal.fall-right.out-down{
-    transform:translate3d(28px, 42px, 0) scale(0.98);
+    transform:translate3d(24px, 28px, 0) scale(0.99);
   }
-  .pillars-grid.reveal > *,
-  .initiatives-grid.reveal > *,
-  .involve-grid.reveal > *,
-  .events-list.reveal > *,
-  .fall-sides.reveal > *{
-    opacity:0;
-    transform:translate3d(0, 34px, 0) scale(0.98);
-    transition:opacity .8s var(--ease-out-soft), transform .8s var(--ease-out-soft);
-  }
-  .pillars-grid.reveal.in-view > *,
-  .initiatives-grid.reveal.in-view > *,
-  .involve-grid.reveal.in-view > *,
-  .events-list.reveal.in-view > *,
-  .fall-sides.reveal.in-view > *{
-    opacity:1;
-    transform:translate3d(0, 0, 0) scale(1);
-  }
-  .fall-sides.reveal > *:nth-child(1),
-  .pillars-grid.reveal > *:nth-child(1),
-  .initiatives-grid.reveal > *:nth-child(1),
-  .involve-grid.reveal > *:nth-child(1),
-  .events-list.reveal > *:nth-child(1){ transition-delay:.05s; }
-  .fall-sides.reveal > *:nth-child(2),
-  .pillars-grid.reveal > *:nth-child(2),
-  .initiatives-grid.reveal > *:nth-child(2),
-  .involve-grid.reveal > *:nth-child(2),
-  .events-list.reveal > *:nth-child(2){ transition-delay:.13s; }
-  .fall-sides.reveal > *:nth-child(3),
-  .pillars-grid.reveal > *:nth-child(3),
-  .initiatives-grid.reveal > *:nth-child(3),
-  .involve-grid.reveal > *:nth-child(3),
-  .events-list.reveal > *:nth-child(3){ transition-delay:.21s; }
 
-  /* ---- Hover lift / zoom ---- */
-  .pillar-card, .init-card, .involve-card, .event-row{ transition:transform .35s var(--ease-smooth), box-shadow .35s var(--ease-smooth), border-color .35s var(--ease-smooth); }
-  .pillar-card:hover, .involve-card:hover{ transform:translateY(-4px); box-shadow:0 16px 32px -20px rgba(73,25,65,0.35); border-color:var(--plum-tint); }
-  .init-card:hover{ transform:translateY(-6px); box-shadow:0 20px 40px -20px rgba(73,25,65,0.35); }
-  .event-row:hover{ transform:translateX(4px); border-color:var(--plum-tint); }
-  .init-photo img, .about-figure img, .hero-figure img{ transition:transform .55s var(--ease-smooth); }
+  /* Staggered side reveals inside grids/lists */
+  .hero-stats .reveal:nth-child(1),
+  .impact-strip .reveal:nth-child(1),
+  .pillars-grid .reveal:nth-child(1),
+  .involve-grid .reveal:nth-child(1),
+  .initiatives-grid .reveal:nth-child(1),
+  .events-list .reveal:nth-child(1),
+  .footer-grid .reveal:nth-child(1){ transition-delay:.03s; }
+  .hero-stats .reveal:nth-child(2),
+  .impact-strip .reveal:nth-child(2),
+  .pillars-grid .reveal:nth-child(2),
+  .involve-grid .reveal:nth-child(2),
+  .initiatives-grid .reveal:nth-child(2),
+  .events-list .reveal:nth-child(2),
+  .footer-grid .reveal:nth-child(2){ transition-delay:.08s; }
+  .hero-stats .reveal:nth-child(3),
+  .impact-strip .reveal:nth-child(3),
+  .pillars-grid .reveal:nth-child(3),
+  .involve-grid .reveal:nth-child(3),
+  .initiatives-grid .reveal:nth-child(3),
+  .events-list .reveal:nth-child(3),
+  .footer-grid .reveal:nth-child(3){ transition-delay:.13s; }
+  .footer-grid .reveal:nth-child(4){ transition-delay:.18s; }
+  .reveal.out-up,
+  .reveal.out-down{ transition-delay:0s !important; }
+
+  .init-card.reveal,
+  .event-row.reveal{
+    transition:
+      opacity var(--dur-reveal) var(--ease-out-soft),
+      transform var(--dur-reveal) var(--ease-out-soft),
+      box-shadow .22s var(--ease-smooth),
+      border-color .22s var(--ease-smooth);
+  }
+
+  /* Card hovers — only after reveal completes */
+  .pillar-card:not(.reveal), .init-card:not(.reveal), .involve-card:not(.reveal), .event-row:not(.reveal){
+    transition:transform .22s var(--ease-smooth), box-shadow .22s var(--ease-smooth), border-color .22s var(--ease-smooth);
+  }
+  .pillar-card:not(.reveal):hover, .pillar-card.reveal.in-view:hover,
+  .involve-card:not(.reveal):hover, .involve-card.reveal.in-view:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 32px -20px rgba(73,25,65,0.35);
+    border-color:var(--plum-tint);
+  }
+  .initiatives-grid .init-card.reveal.in-view:hover{ transform:translate3d(0, -6px, 0); box-shadow:0 20px 40px -20px rgba(73,25,65,0.35); }
+  .init-card:not(.reveal):hover{ transform:translateY(-6px); box-shadow:0 20px 40px -20px rgba(73,25,65,0.35); }
+  .events-list .event-row.reveal.in-view:hover{ transform:translate3d(4px, 0, 0); border-color:var(--plum-tint); }
+  .event-row:not(.reveal):hover{ transform:translateX(4px); border-color:var(--plum-tint); }
+  .init-photo img, .about-figure img, .hero-figure img{ transition:transform .35s var(--ease-smooth); }
   .init-card:hover .init-photo img{ transform:scale(1.05); }
   .about-figure:hover img, .hero-figure:hover img{ transform:scale(1.03); }
-  .btn{ transition:transform .32s var(--ease-smooth), box-shadow .32s var(--ease-smooth), background .25s ease, border-color .25s ease, color .25s ease; }
+  .btn{ transition:transform .22s var(--ease-smooth), box-shadow .22s var(--ease-smooth), background .2s ease, border-color .2s ease, color .2s ease; }
   .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 20px -8px rgba(73,25,65,0.5); }
   .btn-ghost:hover{ transform:translateY(-2px); }
 
@@ -1105,23 +1123,73 @@
 
   /* ---- Mobile: tighter sections + smaller cards ---- */
   @media (max-width:768px){
+    :root{
+      --dur-reveal:0.46s;
+      --dur-reveal-exit:0.38s;
+      --dur-reveal-child:0.42s;
+    }
+    .reveal,
+    .reveal.out-up,
+    .reveal.out-down{
+      transition-duration:var(--dur-reveal);
+    }
+    .reveal.out-up,
+    .reveal.out-down{
+      transition-duration:var(--dur-reveal-exit);
+    }
     .reveal{
-      transform:translate3d(0, 30px, 0) scale(0.98);
+      transform:translate3d(0, 20px, 0) scale(0.99);
     }
     .reveal.fall-left{
-      transform:translate3d(-20px, 30px, 0) scale(0.98);
+      transform:translate3d(-18px, 20px, 0) scale(0.99);
     }
     .reveal.fall-right{
-      transform:translate3d(20px, 30px, 0) scale(0.98);
+      transform:translate3d(18px, 20px, 0) scale(0.99);
     }
-    .fall-sides.reveal > *,
-    .pillars-grid.reveal > *,
-    .initiatives-grid.reveal > *,
-    .involve-grid.reveal > *,
-    .events-list.reveal > *{
-      transform:translate3d(0, 26px, 0) scale(0.98);
+    .reveal.out-up:not(.fall-left):not(.fall-right){
+      transform:translate3d(0, -16px, 0) scale(0.99);
     }
-    .pillar-card:hover, .init-card:hover, .involve-card:hover, .event-row:hover{
+    .reveal.out-down:not(.fall-left):not(.fall-right){
+      transform:translate3d(0, 20px, 0) scale(0.99);
+    }
+    .reveal.fall-left.out-up{
+      transform:translate3d(-14px, -16px, 0) scale(0.99);
+    }
+    .reveal.fall-left.out-down{
+      transform:translate3d(-14px, 20px, 0) scale(0.99);
+    }
+    .reveal.fall-right.out-up{
+      transform:translate3d(14px, -16px, 0) scale(0.99);
+    }
+    .reveal.fall-right.out-down{
+      transform:translate3d(14px, 20px, 0) scale(0.99);
+    }
+    .hero-stats .reveal:nth-child(1),
+    .impact-strip .reveal:nth-child(1),
+    .pillars-grid .reveal:nth-child(1),
+    .involve-grid .reveal:nth-child(1),
+    .initiatives-grid .reveal:nth-child(1),
+    .events-list .reveal:nth-child(1),
+    .footer-grid .reveal:nth-child(1){ transition-delay:.02s; }
+    .hero-stats .reveal:nth-child(2),
+    .impact-strip .reveal:nth-child(2),
+    .pillars-grid .reveal:nth-child(2),
+    .involve-grid .reveal:nth-child(2),
+    .initiatives-grid .reveal:nth-child(2),
+    .events-list .reveal:nth-child(2),
+    .footer-grid .reveal:nth-child(2){ transition-delay:.06s; }
+    .hero-stats .reveal:nth-child(3),
+    .impact-strip .reveal:nth-child(3),
+    .pillars-grid .reveal:nth-child(3),
+    .involve-grid .reveal:nth-child(3),
+    .initiatives-grid .reveal:nth-child(3),
+    .events-list .reveal:nth-child(3),
+    .footer-grid .reveal:nth-child(3){ transition-delay:.1s; }
+    .gallery-track{ animation-duration:24s; }
+    .pillar-card:not(.reveal):hover, .pillar-card.reveal.in-view:hover,
+    .init-card:not(.reveal):hover, .initiatives-grid .init-card.reveal.in-view:hover,
+    .involve-card:not(.reveal):hover, .involve-card.reveal.in-view:hover,
+    .event-row:not(.reveal):hover, .events-list .event-row.reveal.in-view:hover{
       transform:none;
       box-shadow:none;
     }
@@ -1291,15 +1359,15 @@
       </div>
     </div>
 
-    <div class="hero-stats reveal fall-sides">
-      <div><div class="num" data-count="2024" data-suffix="">2024</div><div class="lab">Founded in Accra</div></div>
-      <div><div class="num" data-count="3" data-suffix="">3</div><div class="lab">Initiatives</div></div>
-      <div class="mobile-hide"><div class="num num-long">Education · Health · Community</div><div class="lab">Core focus areas</div></div>
+    <div class="hero-stats">
+      <div class="reveal fall-left"><div class="num" data-count="2024" data-suffix="">2024</div><div class="lab">Founded in Accra</div></div>
+      <div class="reveal fall-right"><div class="num" data-count="3" data-suffix="">3</div><div class="lab">Initiatives</div></div>
+      <div class="reveal fall-left mobile-hide"><div class="num num-long">Education · Health · Community</div><div class="lab">Core focus areas</div></div>
     </div>
   </div>
 </section>
 
-<section class="gallery-loop">
+<section class="gallery-loop reveal fall-left">
   <div class="wrap">
     <div class="gallery-viewport">
       <div class="gallery-track">
@@ -1323,11 +1391,11 @@
 
 <section class="about" id="about">
   <div class="wrap">
-    <div class="about-grid reveal fall-left">
-      <div class="about-figure">
+    <div class="about-grid">
+      <div class="about-figure reveal fall-left">
         <img src="https://images.pexels.com/photos/11139373/pexels-photo-11139373.jpeg" alt="A St. Joana Foundation volunteer working with a community in Ghana">
       </div>
-      <div class="about-copy">
+      <div class="about-copy reveal fall-right">
         <p class="eyebrow mobile-hide">Rooted in compassion, growing with purpose</p>
         <h2 style="margin-top:10px; font-size:clamp(1.6rem,2.8vw,2.1rem);">One hand, many lives</h2>
         <p><span class="desktop-only">What began with helping one family at a time is now focused programs with real outcomes — built by listening first and partnering locally.</span><span class="mobile-only">From one family to focused programs with real outcomes.</span></p>
@@ -1338,22 +1406,22 @@
       </div>
     </div>
 
-    <div class="impact-strip reveal fall-right">
-      <article class="impact-item">
+    <div class="impact-strip">
+      <article class="impact-item reveal fall-left">
         <div class="top">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9zM5 13.18v4L12 21l7-3.82v-4L12 17z"/></svg>
           <strong>Learning</strong>
         </div>
         <p class="mobile-hide">School supplies and learning support where gaps are biggest.</p>
       </article>
-      <article class="impact-item">
+      <article class="impact-item reveal fall-right">
         <div class="top">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
           <strong>Wellness</strong>
         </div>
         <p class="mobile-hide">Nutrition and healthcare outreach that reaches vulnerable groups.</p>
       </article>
-      <article class="impact-item">
+      <article class="impact-item reveal fall-left">
         <div class="top">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
           <strong>Community</strong>
@@ -1366,23 +1434,23 @@
 
 <section id="pillars" class="section-soft">
   <div class="wrap">
-    <div class="section-head compact reveal">
+    <div class="section-head compact reveal fall-left">
       <p class="eyebrow mobile-hide">Our commitment</p>
       <h2>Three pillars, one mission</h2>
       <p class="mobile-hide">Focused priorities that keep our work clear and effective.</p>
     </div>
-    <div class="pillars-grid reveal fall-sides">
-      <div class="pillar-card">
+    <div class="pillars-grid">
+      <div class="pillar-card reveal fall-left">
         <div class="num">01</div>
         <h3>Education</h3>
         <p class="mobile-hide">Safe learning spaces and tools that help students thrive.</p>
       </div>
-      <div class="pillar-card">
+      <div class="pillar-card reveal fall-right">
         <div class="num">02</div>
         <h3>Healthcare</h3>
         <p class="mobile-hide">Care access, nutrition support, and child wellness programs.</p>
       </div>
-      <div class="pillar-card">
+      <div class="pillar-card reveal fall-left">
         <div class="num">03</div>
         <h3><span class="desktop-only">Community Development</span><span class="mobile-only">Community</span></h3>
         <p class="mobile-hide">Practical support that strengthens household resilience.</p>
@@ -1393,13 +1461,13 @@
 
 <section class="about" id="initiatives">
   <div class="wrap">
-    <div class="section-head compact reveal">
+    <div class="section-head compact reveal fall-right">
       <p class="eyebrow mobile-hide">Where the work happens</p>
       <h2>Our initiatives</h2>
       <p class="mobile-hide">Three active projects delivering direct, practical impact.</p>
     </div>
-    <div class="initiatives-grid reveal fall-sides">
-      <div class="init-card init-card--teal">
+    <div class="initiatives-grid">
+      <div class="init-card init-card--teal reveal fall-left">
         <div class="init-photo">
           <img src="https://images.pexels.com/photos/13666300/pexels-photo-13666300.jpeg" alt="Children at a classroom desk with school supplies">
           <div class="init-mark">BS</div>
@@ -1410,7 +1478,7 @@
           <a class="init-link" href="https://www.stjoanafoundation.org/initiatives/babysteps"><span class="desktop-only">Learn more →</span><span class="mobile-only">More →</span></a>
         </div>
       </div>
-      <div class="init-card init-card--orange">
+      <div class="init-card init-card--orange reveal fall-right">
         <div class="init-photo">
           <img src="https://images.pexels.com/photos/5289489/pexels-photo-5289489.jpeg" alt="Fresh fruit prepared for community nutrition distribution">
           <div class="init-mark">VT</div>
@@ -1421,7 +1489,7 @@
           <a class="init-link" href="https://www.stjoanafoundation.org/initiatives/vitals"><span class="desktop-only">Learn more →</span><span class="mobile-only">More →</span></a>
         </div>
       </div>
-      <div class="init-card init-card--green">
+      <div class="init-card init-card--green reveal fall-left">
         <div class="init-photo">
           <img src="https://images.pexels.com/photos/11405561/pexels-photo-11405561.jpeg" alt="A healthcare worker reviewing digital patient records on a tablet">
           <div class="init-mark">BC</div>
@@ -1438,13 +1506,13 @@
 
 <section id="events" class="section-soft">
   <div class="wrap">
-    <div class="section-head compact reveal">
+    <div class="section-head compact reveal fall-left">
       <p class="eyebrow mobile-hide">Our next mission</p>
       <h2>Upcoming events</h2>
       <p class="mobile-hide">Join us on the ground and meet the community.</p>
     </div>
-    <div class="events-list reveal fall-right">
-      <div class="event-row event-vitals">
+    <div class="events-list">
+      <div class="event-row event-vitals reveal fall-left">
         <div class="date">Jun 27, 2026</div>
         <div>
           <div class="name initiative-vitals">VITALS Blood Drive</div>
@@ -1452,7 +1520,7 @@
         </div>
         <a class="link initiative-vitals" href="https://www.stjoanafoundation.org/events/69d57cdb738b9d9601f524bf"><span class="desktop-only">More details →</span><span class="mobile-only">Details →</span></a>
       </div>
-      <div class="event-row event-baby">
+      <div class="event-row event-baby reveal fall-right">
         <div class="date">Dec 20, 2025</div>
         <div>
           <div class="name initiative-baby"><span class="desktop-only">Feed the Street — Koforidua</span><span class="mobile-only">Feed the Street</span></div>
@@ -1460,7 +1528,7 @@
         </div>
         <a class="link initiative-baby" href="https://www.stjoanafoundation.org/events/694041251ade2aa29a10b7fe"><span class="desktop-only">More details →</span><span class="mobile-only">Details →</span></a>
       </div>
-      <div class="event-row event-bridge mobile-hide">
+      <div class="event-row event-bridge mobile-hide reveal fall-left">
         <div class="date">May 25, 2025</div>
         <div>
           <div class="name initiative-bridge">Project Awutu</div>
@@ -1469,7 +1537,7 @@
         <a class="link initiative-bridge" href="https://www.stjoanafoundation.org/events/68e3f86c731a718b6d947a55"><span class="desktop-only">More details →</span><span class="mobile-only">Details →</span></a>
       </div>
     </div>
-    <div style="margin-top:28px;">
+    <div style="margin-top:28px;" class="reveal fall-right">
       <a href="https://www.stjoanafoundation.org/events" class="btn btn-ghost">See all events</a>
     </div>
   </div>
@@ -1477,23 +1545,23 @@
 
 <section id="involve">
   <div class="wrap">
-    <div class="section-head compact reveal">
+    <div class="section-head compact reveal fall-right">
       <p class="eyebrow mobile-hide">Get involved</p>
       <h2>Be part of the change</h2>
       <p class="mobile-hide">Give, volunteer, or spread the word.</p>
     </div>
-    <div class="involve-grid reveal fall-sides">
-      <div class="involve-card">
+    <div class="involve-grid">
+      <div class="involve-card reveal fall-left">
         <h3>Volunteer</h3>
         <p class="mobile-hide">Serve on-site during campaigns and outreach events.</p>
         <a href="https://www.stjoanafoundation.org/volunteer" class="btn btn-ghost"><span class="desktop-only">See volunteer roles</span><span class="mobile-only">Volunteer</span></a>
       </div>
-      <div class="involve-card">
+      <div class="involve-card reveal fall-right">
         <h3>Donate</h3>
         <p class="mobile-hide">Support our active programs directly.</p>
         <a href="#contact" class="btn btn-primary">Donate now</a>
       </div>
-      <div class="involve-card">
+      <div class="involve-card reveal fall-left">
         <h3>Follow along</h3>
         <p class="mobile-hide">Follow real updates from the field.</p>
         <a href="https://www.instagram.com/stjoanafoundation/" class="btn btn-ghost"><span class="desktop-only">Follow on Instagram</span><span class="mobile-only">Instagram</span></a>
@@ -1505,7 +1573,7 @@
 <footer id="contact">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
+      <div class="reveal fall-left">
         <a href="https://stjoanafoundation.org/" class="brand" style="margin-bottom:14px; display:flex;">
           <img class="brand-mark" src="https://pbs.twimg.com/media/HMyi0vhXwAE5X0P?format=png&name=small" alt="St. Joana Foundation logo">
         </a>
@@ -1517,7 +1585,7 @@
           <a href="https://www.linkedin.com/in/st-joana-foundation-b96866361" aria-label="LinkedIn">IN</a>
         </div>
       </div>
-      <div>
+      <div class="reveal fall-right">
         <h4>Useful Links</h4>
         <ul>
           <li><a href="#about">About</a></li>
@@ -1526,7 +1594,7 @@
           <li><a href="https://www.stjoanafoundation.org/volunteer">Volunteer</a></li>
         </ul>
       </div>
-      <div>
+      <div class="reveal fall-left">
         <h4>Our Initiatives</h4>
         <ul>
           <li><a class="initiative-link initiative-baby" href="https://www.stjoanafoundation.org/initiatives/babysteps">Baby Steps</a></li>
@@ -1534,7 +1602,7 @@
           <li><a class="initiative-link initiative-bridge" href="https://www.stjoanafoundation.org/initiatives/bridgecare">BRIDGECARE</a></li>
         </ul>
       </div>
-      <div>
+      <div class="reveal fall-right">
         <h4>Contact</h4>
         <ul>
           <li><a href="mailto:hello@stjoanafoundation.org">hello@stjoanafoundation.org</a></li>
@@ -1566,23 +1634,21 @@
   if(prefersReducedMotion){
     revealEls.forEach(el=>el.classList.add('in-view'));
   } else if('IntersectionObserver' in window){
-    const ENTER_RATIO = isMobileReveal ? 0.15 : 0.18;
-    const EXIT_RATIO = 0.07;
-
-    const io = new IntersectionObserver((entries)=>{
+    const revealObserver = new IntersectionObserver((entries)=>{
       entries.forEach(entry=>{
         const el = entry.target;
-        const ratio = entry.intersectionRatio || 0;
         const isVisible = el.dataset.revealVisible === '1';
 
-        if(!isVisible && ratio >= ENTER_RATIO){
-          el.dataset.revealVisible = '1';
-          el.classList.remove('out-up', 'out-down');
-          el.classList.add('in-view');
+        if(entry.isIntersecting){
+          if(!isVisible){
+            el.dataset.revealVisible = '1';
+            el.classList.remove('out-up', 'out-down');
+            el.classList.add('in-view');
+          }
           return;
         }
 
-        if(isVisible && ratio <= EXIT_RATIO){
+        if(isVisible){
           el.dataset.revealVisible = '0';
           el.classList.remove('in-view');
           el.classList.remove('out-up', 'out-down');
@@ -1590,12 +1656,13 @@
         }
       });
     }, {
-      threshold:[0, 0.05, 0.1, 0.15, 0.18, 0.28, 0.4],
-      rootMargin:'-2% 0px -12% 0px'
+      threshold: isMobileReveal ? [0, 0.06, 0.12, 0.2] : [0, 0.08, 0.16, 0.3],
+      rootMargin: isMobileReveal ? '0px 0px -4% 0px' : '-2% 0px -8% 0px'
     });
+
     revealEls.forEach(el=>{
       el.dataset.revealVisible = '0';
-      io.observe(el);
+      revealObserver.observe(el);
     });
   } else {
     revealEls.forEach(el=>el.classList.add('in-view'));
@@ -1605,7 +1672,7 @@
   const counters = document.querySelectorAll('.num[data-count]');
   const animateCount = (el)=>{
     const target = parseInt(el.getAttribute('data-count'), 10);
-    const duration = 1100;
+    const duration = isMobileReveal ? 850 : 1000;
     const start = performance.now();
     const step = (now)=>{
       const progress = Math.min((now - start) / duration, 1);
