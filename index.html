@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>St. Joana Foundation — Design Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body{
+    padding-top:0;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(160deg, var(--plum-mist) 0%, var(--white) 50%, var(--plum-glow) 100%);
+  }
+  .picker{
+    max-width:520px;
+    width:100%;
+    margin:32px 20px;
+    padding:40px 36px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:0 28px 56px -32px rgba(73,25,65,0.35);
+    text-align:center;
+  }
+  .picker .brand{
+    justify-content:center;
+    margin-bottom:20px;
+  }
+  .picker h1{
+    font-size:1.65rem;
+    line-height:1.15;
+    margin:0;
+  }
+  .picker p{
+    margin:12px 0 0;
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    line-height:1.55;
+  }
+  .picker__list{
+    list-style:none;
+    margin:28px 0 0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .picker__list a{
+    display:block;
+    padding:14px 18px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    text-decoration:none;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    color:var(--plum);
+    background:var(--tint);
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .picker__list a:hover{
+    background:var(--plum-mist);
+    border-color:var(--plum-glow);
+  }
+  .picker__list a span{
+    display:block;
+    margin-top:4px;
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+  <main class="picker">
+    <a href="https://stjoanafoundation.org/" class="brand">
+      <img class="brand-mark" src="https://pbs.twimg.com/media/HMyi0vhXwAE5X0P?format=png&name=small" alt="St. Joana Foundation logo">
+    </a>
+    <h1>Design preview</h1>
+    <p>Choose a layout to preview. Each version uses the same content and colors.</p>
+    <ul class="picker__list">
+      <li><a href="design-1/index.html">Design 1<span>Editorial split hero · bento gallery</span></a></li>
+      <li><a href="design-2/index.html">Design 2<span>Typography-first · photo wall</span></a></li>
+      <li><a href="design-3/index.html">Design 3<span>Floating card hero · magazine gallery</span></a></li>
+      <li><a href="design-4/index.html">Design 4<span>Split-screen hero · zigzag about</span></a></li>
+    </ul>
+  </main>
+</body>
+</html>
